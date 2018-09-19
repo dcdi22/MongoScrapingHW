@@ -60,6 +60,7 @@ app.get("/", function(req, res) {
 
 app.get("/saved", function(req, res) {
   db.Article.find({"saved": true}).populate("notes").then(function(err, articles){
+    console.log(articles);
     var hbsObject = {
       article: articles
     };
@@ -87,6 +88,7 @@ app.get('/scrape', function(req, res) {
       db.Article.insertMany(results)
           .then(function() {
               res.send('Scrape Complete');
+              //res.redirect("/")
           })
           .catch(function(err) {
               return res.json(err);
@@ -94,6 +96,40 @@ app.get('/scrape', function(req, res) {
           //res.redirect("/")
   });
 });
+
+// Will get articles from mongodb
+app.get("/articles", function(req, res) {
+  db.Article.find({})
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+})
+
+// Grab article by it's id
+app.get("/articles/:id", function(req, res) {
+  db.Article.findOne({"_id": req.params.id}).populate("note").then(function(dbArticle) {
+    res.json(dbArticle);
+  })
+  .catch(function(err) {
+    res.json(err);
+  });
+})
+
+// Save an article
+app.post("/articles/save/:id", function(req, res) {
+  db.Article.findOneAndUpdate({"_id": req.params.id}, {"saved": true}).then(function(dbArticle) {
+    // If we were able to successfully update an Article, send it back to the client
+    res.json(dbArticle);
+    console.log(dbArticle);
+  })
+  .catch(function(err) {
+    // If an error occurred, send it to the client
+    res.json(err);
+  });
+})
 
 
 
