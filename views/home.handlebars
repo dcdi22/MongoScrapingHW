@@ -1,0 +1,32 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Mongo Scraper</h1>
+    <p class="lead">Lets scrape some mangos</p>
+  </div>
+</div>
+
+<div class="article-container container">
+    <div class="row">
+        <div class="col-md-12">
+            {{#if article}}
+            {{#each article}}
+            <div class="card">
+                <div class="card-header">
+                    <a href={{this.link}} target="_blank">{{this.title}}</a>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{this.summary}}</p>
+                    <button type="button" class="btn btn-success save" data-id={{this._id}}>Save Article</button>
+                </div>
+            </div>
+            {{/each}}
+            {{else}}
+            <div class="card">
+                <div class="card-body">
+                    <p>Uh Oh. Looks like we don't have any new articles.</p>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

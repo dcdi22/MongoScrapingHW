@@ -1,0 +1,36 @@
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Mongo Scraper</h1>
+        <p class="lead">Here's your saved mangos</p>
+    </div>
+</div>
+
+<div class="saved-article-container container">
+    <div class="row">
+        <div class="col-md-12">
+            {{#if article}}
+            {{#each article}}
+            <div class="card">
+                <div class="card-header">
+                    <a href={{this.link}} target="_blank">{{this.title}}</a>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{this.summary}}</p>
+                    <button type="button" class="btn btn-success addNote" data-toggle="modal" data-target="#noteModal{{this._id}}"
+                        data-id={{this.id}}>
+                        Add a Note
+                    </button>
+                    <button type="button" class="btn btn-danger delete" data-id={{this.id}}>Delete</button>
+                </div>
+            </div>
+            {{/each}}
+            {{else}}
+            <div class="card">
+                <div class="card-body">
+                    <p>You have no saved articles.</p>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
