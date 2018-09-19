@@ -68,29 +68,30 @@ app.get("/saved", function(req, res) {
 });
 
 // A GET request to Scrape website
-app.get("/scrape", function(req, res) {
-  request("https://www.nytimes.com/", function(error, response, html) {
-    var $ =  cheerio.load(html);
+app.get('/scrape', function(req, res) {
+  request('https://www.bitchmedia.org/culture', function(error, response, html) {
+      var $ = cheerio.load(html);
 
-    $("article").each(function(i, element) {
-      var result = {};
+      var results = [];
 
-      result.title = $(this).children("h2").text();
-      result.summary = $(this).children(".summary").text();
-      result.link = $(this).children("h2").children("a").attr("href");
+      $('div.views-row').each(function(i, element) {
+          var result = {};
 
-      db.Article.create(result)
-        .then(function(dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
-        })
-        .catch(function(err) {
-          // If an error occurred, send it to the client
-          return res.json(err);
-        });
-    });
-    res.send("Scrape Complete");
-    //res.redirect("/");
+          result.title = $(this).find('h2').text();
+          result.summary = $(this).find('.views-field-nothing').text() || $(this).find('.field-content').text() ;
+          result.link = $(this).find('h2').find('a').attr('href');
+
+          results.push(result);
+      });
+
+      db.Article.insertMany(results)
+          .then(function() {
+              res.send('Scrape Complete');
+          })
+          .catch(function(err) {
+              return res.json(err);
+          });
+          //res.redirect("/")
   });
 });
 
