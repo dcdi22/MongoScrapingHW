@@ -69,7 +69,7 @@ app.get("/saved", function(req, res) {
 
 // A GET request to Scrape website
 app.get("/scrape", function(req, res) {
-  request("https://www.nytimes.com/", function(err, res, html) {
+  request("https://www.nytimes.com/", function(error, response, html) {
     var $ =  cheerio.load(html);
 
     $("article").each(function(i, element) {
