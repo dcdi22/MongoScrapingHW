@@ -59,7 +59,8 @@ app.get("/", function(req, res) {
 });
 
 app.get("/saved", function(req, res) {
-  db.Article.find({"saved": true}).populate("notes").then(function(err, articles){
+  console.log("HELLLOOOO")
+  db.Article.find({"saved": true}).populate("notes").exec(function(err, articles){
     console.log(articles);
     var hbsObject = {
       article: articles
@@ -67,6 +68,15 @@ app.get("/saved", function(req, res) {
     res.render("saved", hbsObject);
   });
 });
+// app.get("/saved", function(req, res) {
+//   db.Article.find({"saved": true}, function(err, data) {
+//     var hbsObject = {
+//       article: data
+//     };
+//     console.log(hbsObject);
+//     res.render("saved", hbsObject);
+//   });
+// });
 
 // A GET request to Scrape website
 app.get('/scrape', function(req, res) {
@@ -97,26 +107,37 @@ app.get('/scrape', function(req, res) {
   });
 });
 
-// Will get articles from mongodb
-app.get("/articles", function(req, res) {
-  db.Article.find({})
-    .then(function(dbArticle) {
-      res.json(dbArticle);
+// Should clear articles
+app.get("/clear", function(req, res) {
+  db.Article.remove({})
+    .then(function() {
+      res.send("Articles Removed");
     })
     .catch(function(err) {
       res.json(err);
     });
 })
 
+// Will get articles from mongodb
+// app.get("/articles", function(req, res) {
+//   db.Article.find({})
+//     .then(function(dbArticle) {
+//       res.json(dbArticle);
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//     });
+// })
+
 // Grab article by it's id
-app.get("/articles/:id", function(req, res) {
-  db.Article.findOne({"_id": req.params.id}).populate("note").then(function(dbArticle) {
-    res.json(dbArticle);
-  })
-  .catch(function(err) {
-    res.json(err);
-  });
-})
+// app.get("/articles/:id", function(req, res) {
+//   db.Article.findOne({"_id": req.params.id}).populate("note").then(function(dbArticle) {
+//     res.json(dbArticle);
+//   })
+//   .catch(function(err) {
+//     res.json(err);
+//   });
+// })
 
 // Save an article
 app.post("/articles/save/:id", function(req, res) {
@@ -127,6 +148,16 @@ app.post("/articles/save/:id", function(req, res) {
   })
   .catch(function(err) {
     // If an error occurred, send it to the client
+    res.json(err);
+  });
+})
+
+// Delete an article
+app.post("/articles/delete/:id", function(req, res) {
+  db.Article.deleteOne({"_id": req.params.id}).then(function() {
+    res.send("Articles Removed");
+  })
+  .catch(function(err) {
     res.json(err);
   });
 })
